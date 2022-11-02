@@ -8,7 +8,7 @@ def top_ten(subreddit):
                             .format(subreddit),
                             headers={"User-Agent": "User-Agent"},
                             allow_redirects=False)
-    if sub_info.status_code >= 400:
+    if sub_info.status_code >= 200:
         print('None')
     else:
         [print(child.get("data").get("title"))
