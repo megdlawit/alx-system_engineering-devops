@@ -9,7 +9,7 @@ def number_of_subscribers(subreddit):
                             .format(subreddit),
                             headers={"User-Agent": "User-Agent"},
                             allow_redirects=False)
-    if sub_info.status_code >= 300:
+    if sub_info.status_code >= 400:
         return 0
 
     return sub_info.json().get("data").get("subscribers")
