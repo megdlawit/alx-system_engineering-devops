@@ -1,24 +1,6 @@
-# Set the Nginx ULIMIT to a higher value
-
-exec { 'replace ULIMIT':
-    path    => '/usr/bin',
-    command => 'sudo sed -i "s/ULIMIT=\"-n 10\"/ULIMIT=\"-n 262144\"/g" /etc/default/nginx',
-}# 0. Sky is the limit, let's bring that limit higher
-
-service { 'nginx':
-  ensure => 'running',
-  enable => true,
-}
-
-file { '/etc/default/nginx':
-  ensure => present,
-} -> exec { 'ULIMIT':
-  notify  => Service['nginx'],
-  path    => '/bin/',
-  command => "sed -i 's/10/4000/g' /etc/default/nginx"
-}
-
--> exec { 'restart NGINX':
-    path    => '/usr/bin',
-    command => 'service nginx restart',
+# fix our stack so that we get to 0 errors
+exec { 'file limit':
+  onlyif   => 'test -e /etc/default/nginx',
+  command  => 'sed -i "5s/[0-9]\+/$( ulimit -n )/" /etc/default/nginx; service nginx restart',
+  provider => shell,
 }
